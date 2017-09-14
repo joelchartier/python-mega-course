@@ -1,20 +1,27 @@
+"""
+    First Application from Python-Mega-Course
+"""
+
 import json
 from difflib import get_close_matches
 
-dictionnary = json.load(open("data.json", "r"))
+DATA = json.load(open("data.json", "r"))
 
-def get_definition(word):
-    word = word.lower()
-    if word in dictionnary:
-        print(dictionnary[word])
+def run():
+    """ Execute the application """
+    user_input = input("Please enter a word: ").lower()
+
+    if user_input in DATA:
+        print("Here are the found definition(s) for the word [%s]" % user_input)
+        for index, definition in enumerate(DATA[user_input]):
+            print("%s) %s" % (index + 1, definition))
+        return
+
+    possible_words = get_close_matches(user_input, DATA.keys(), cutoff=0.8)
+    if possible_words:
+        print("You might meant: %s" % possible_words)
+        run()
     else:
-
-        possibleWords = get_close_matches(word, list(dictionnary.keys()))
         print("No word found")
-        if len(possibleWords) > 0:
-            print("You might meant:")
-            print(possibleWords)
-            
 
-word = input("Please enter a word: ")
-get_definition(word)
+run()
